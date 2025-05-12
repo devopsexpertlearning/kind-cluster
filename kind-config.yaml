@@ -1,0 +1,27 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: "10.0.0.76"
+  apiServerPort: 6443
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 89
+    hostPort: 89
+    protocol: TCP
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        #node-ip: "155.248.251.95"
+        node-labels: "ingress-ready=true" # Useful for ingress controllers
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      certSANs:
+      - "155.248.251.95"
+      - "127.0.0.1"
+      - "10.0.0.76"
+- role: worker
+- role: worker
